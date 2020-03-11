@@ -1,10 +1,8 @@
 import React from "react";
-import axios from "axios";
 import SeasonDisplay from './SeasonDisplay';
 import './SeasonDisplay.css';
 import Loader from './loader.js';
 import LocationData from "./LocationData";
-import WeatherCard from "./WeatherCard";
 import "./App.css";
 
 // This app focuses on `class`-based components in react and their additional capabilities, including an introduction to `state` and `props`.
@@ -72,13 +70,13 @@ class App extends React.Component {
 		// direct assignment to `state` in ONLY done when INITIALIZING `state`;
 		this.state = {
 			lat: null,
-			long: null,
+			lon: null,
 			mapData: [],
 			weatherForecast: [],
 			errorMessage: null
 		}
 		/* Can also set initial state in a single line, w/o having to use constructor method:
-		state = { lat: null, long: null, errorMessage: null };
+		state = { lat: null, lon: null, errorMessage: null };
 		*/
 	}
 
@@ -87,35 +85,13 @@ class App extends React.Component {
 		// this was initially built into the `constructor` so that when the class is created, it will immediately begin working on requesting the data (in this case from the browser), but was moved into `componentDidMount()`, as it is a better lifeCycle method to use for initial data loading.
 		await window.navigator.geolocation.getCurrentPosition(
 			(position) => {
-				// called `setState` to update `lat` and `long`
+				// called `setState` to update `lat` and `lon`
 				this.setState({ lat: position.coords.latitude });
-				this.setState({ long: position.coords.longitude });
+				this.setState({ lon: position.coords.longitude });
 			},
 			// make sure to `console.log(error)` any time any errors may pop up in your code (easier debugging)
 			(error) => this.setState({ errorMessage: error.message })
 		);
-
-		await axios.get("http://api.weatherapi.com/v1/forecast.json", {
-			params: {
-				key: "48f162a78e4f4a62865190945190412",
-				days: 5,
-				q: {
-					lat: `${this.state.lat}`,
-					lon: `${this.state.long}`
-				}
-			}
-		})
-			.then(res => {
-				console.log(res);
-				this.setState({ weatherForecast: res.data.forecast.forecastday });
-			});
-
-
-// API retrieved via `fetch`
-		// const response = await fetch("http://api.weatherapi.com/v1/forecast.json?key=48f162a78e4f4a62865190945190412&q=chicago&days=5")
-		// // convert results to JSON
-		// const data = await response.json();
-		// this.setState({ weatherForecast: data.forecast.forecastday });
 	}
 
 	// componentDidUpdate() {
@@ -133,22 +109,18 @@ class App extends React.Component {
 			return (
 				// `state` can be passed down to children components as `props`
 					<div id="container">
-						<SeasonDisplay
-							lat={this.state.lat}
-							long={this.state.long}
-						/>
-						<div id="localForecast">
-							<div id="locationData">
-								<LocationData
-									lat={this.state.lat}
-									long={this.state.long}
-								/>
-							</div>
-							<div id="weatherCards">
-								<WeatherCard
-									weatherForecast={this.state.weatherForecast}
-								/>
-							</div>
+						<div>
+							<SeasonDisplay
+								lat={this.state.lat}
+								lon={this.state.lon}
+							/>
+						</div>
+						<div id="locationData">
+							<LocationData
+								lat={this.state.lat}
+								lon={this.state.lon}
+								weatherForecast={this.state.weatherForecast}
+							/>
 						</div>
 					</div>
 			);

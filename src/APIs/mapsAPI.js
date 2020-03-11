@@ -6,7 +6,8 @@ export class MapContainer extends React.Component {
   render() {
     const style = {
       width: "25em",
-      height: "20em"
+      height: "auto",
+      maxHeight: "25em"
     }
     return (
       <Map
@@ -14,7 +15,7 @@ export class MapContainer extends React.Component {
         style={style}
         initialCenter={{
           lat: this.props.lat,
-          lng: this.props.long
+          lng: this.props.lon
         }}
         zoom={16}
       />
