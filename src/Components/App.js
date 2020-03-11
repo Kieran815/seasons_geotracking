@@ -92,6 +92,12 @@ class App extends React.Component {
 			// make sure to `console.log(error)` any time any errors may pop up in your code (easier debugging)
 			(error) => this.setState({ errorMessage: error.message })
 		);
+
+		const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=48f162a78e4f4a62865190945190412&q="Chicago"&days=5`)
+		// convert results to JSON
+		const data = await response.json();
+		console.log(data);
+		this.setState({ weatherForecast: data.forecast.forecastday });
 	}
 
 	// componentDidUpdate() {
