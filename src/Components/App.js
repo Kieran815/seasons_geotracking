@@ -84,20 +84,32 @@ class App extends React.Component {
 		// use built-in browser function to get `geolocation` for user
 		// this was initially built into the `constructor` so that when the class is created, it will immediately begin working on requesting the data (in this case from the browser), but was moved into `componentDidMount()`, as it is a better lifeCycle method to use for initial data loading.
 		await window.navigator.geolocation.getCurrentPosition(
-			(position) => {
+			position => {
+				const { latitude, longitude } = position.coords;
 				// called `setState` to update `lat` and `lon`
-				this.setState({ lat: position.coords.latitude });
-				this.setState({ lon: position.coords.longitude });
+				this.setState(
+					{
+						lat: latitude,
+						lon: longitude
+				 	},
+					async () => {
+						const response = await fetch(
+							`http://api.weatherapi.com/v1/forecast.json?key=48f162a78e4f4a62865190945190412&q=${this.state.lat},${this.state.lon}&days=5`
+						);
+						// convert results to JSON
+						const data = await response.json();
+						console.log(data);
+						this.setState({
+							weatherForecast: data.forecast.forecastday
+						});
+					}
+				);
 			},
 			// make sure to `console.log(error)` any time any errors may pop up in your code (easier debugging)
-			(error) => this.setState({ errorMessage: error.message })
+			error => this.setState({ errorMessage: error.message })
 		);
 
-		const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=48f162a78e4f4a62865190945190412&q="Chicago"&days=5`)
-		// convert results to JSON
-		const data = await response.json();
-		console.log(data);
-		this.setState({ weatherForecast: data.forecast.forecastday });
+
 	}
 
 	// componentDidUpdate() {
