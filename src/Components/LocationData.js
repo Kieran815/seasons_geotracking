@@ -7,6 +7,7 @@ const LocationData = props => {
   return (
     <div className="locationData">
       <GoogleApiWrapper
+        className="apiWrapper"
         lat={props.lat}
         lon={props.lon}
       />

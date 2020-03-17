@@ -1,6 +1,21 @@
 #card {
   align-items: center;
-  max-width: 100%;
-  min-width: 100%;
+  max-width: 90vh;
   text-align: center;
+}
+
+.dailyCardGroup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media screen and (max-width: 1010px) {
+  .dailyCardGroup {
+    margin-top: 48vh;
+    margin-left: 1vh;
+    margin-right: 1vh;
+
+  }
 }

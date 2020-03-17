@@ -30,7 +30,7 @@ const WeatherCard = props => {
   })
 
   return(
-    <div>
+    <div className="dailyCardGroup">
       {dailyCard}
     </div>
   )

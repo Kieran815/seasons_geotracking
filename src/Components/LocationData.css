@@ -3,3 +3,12 @@
   justify-content: space-around;
   margin-top: 2em;
 }
+
+@media only screen and (max-width: 1010px) {
+  .locationData {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1em
+  }
+}

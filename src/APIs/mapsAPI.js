@@ -5,9 +5,13 @@ export class MapContainer extends React.Component {
 
   render() {
     const style = {
-      width: "25em",
-      height: "auto",
-      maxHeight: "25em"
+      display: "flex",
+      justifyContent: "space-around",
+      width: "auto",
+      maxWidth: "21em",
+      height: "45vh",
+      minHeight: "40vh",
+      maxHeight: "50vh"
     }
     return (
       <Map
