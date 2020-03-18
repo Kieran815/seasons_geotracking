@@ -98,7 +98,6 @@ class App extends React.Component {
 						);
 						// convert results to JSON
 						const data = await response.json();
-						console.log(data);
 						this.setState({
 							weatherForecast: data.forecast.forecastday
 						});
