@@ -1,9 +1,10 @@
 import React from "react";
-import SeasonDisplay from './SeasonDisplay';
-import './SeasonDisplay.css';
-import Loader from './loader.js';
+import SeasonDisplay from "./SeasonDisplay";
+import "./SeasonDisplay.css";
+import Loader from "./loader.js";
 import LocationData from "./LocationData";
 import "./App.css";
+require("dotenv").config();
 
 // This app focuses on `class`-based components in react and their additional capabilities, including an introduction to `state` and `props`.
 /* `App` written as a `functional` component:
@@ -61,101 +62,92 @@ const App = () => {
 
 // `App` written as `class`- based component:
 class App extends React.Component {
-	// `constructor()` from JS. `constructor` is called any time an instance of a class is created. used in React to set initial `state`.
-	// `constructor` is not required unless building additional setup for app.
-	constructor(props) {
-		super(props); // `super` used to set initial `state` in React
-		// `state` is created inside a JS object (`{...}`)
-		// create `this.state` to track `state` across the app.
-		// direct assignment to `state` in ONLY done when INITIALIZING `state`;
-		this.state = {
-			lat: null,
-			lon: null,
-			mapData: [],
-			weatherForecast: [],
-			errorMessage: null
-		}
-		/* Can also set initial state in a single line, w/o having to use constructor method:
+  // `constructor()` from JS. `constructor` is called any time an instance of a class is created. used in React to set initial `state`.
+  // `constructor` is not required unless building additional setup for app.
+  constructor(props) {
+    super(props); // `super` used to set initial `state` in React
+    // `state` is created inside a JS object (`{...}`)
+    // create `this.state` to track `state` across the app.
+    // direct assignment to `state` in ONLY done when INITIALIZING `state`;
+    this.state = {
+      lat: null,
+      lon: null,
+      mapData: [],
+      weatherForecast: [],
+      errorMessage: null
+    };
+    /* Can also set initial state in a single line, w/o having to use constructor method:
 		state = { lat: null, lon: null, errorMessage: null };
 		*/
-	}
+  }
 
-	async componentDidMount() {
-		// use built-in browser function to get `geolocation` for user
-		// this was initially built into the `constructor` so that when the class is created, it will immediately begin working on requesting the data (in this case from the browser), but was moved into `componentDidMount()`, as it is a better lifeCycle method to use for initial data loading.
-		await window.navigator.geolocation.getCurrentPosition(
-			position => {
-				const { latitude, longitude } = position.coords;
-				// called `setState` to update `lat` and `lon`
-				this.setState(
-					{
-						lat: latitude,
-						lon: longitude
-				 	},
-					async () => {
-						const response = await fetch(
-							`http://api.weatherapi.com/v1/forecast.json?key=48f162a78e4f4a62865190945190412&q=${this.state.lat},${this.state.lon}&days=5`
-						);
-						// convert results to JSON
-						const data = await response.json();
-						this.setState({
-							weatherForecast: data.forecast.forecastday
-						});
-					}
-				);
-			},
-			// make sure to `console.log(error)` any time any errors may pop up in your code (easier debugging)
-			error => this.setState({ errorMessage: error.message })
-		);
+  async componentDidMount() {
+    // use built-in browser function to get `geolocation` for user
+    // this was initially built into the `constructor` so that when the class is created, it will immediately begin working on requesting the data (in this case from the browser), but was moved into `componentDidMount()`, as it is a better lifeCycle method to use for initial data loading.
+    await window.navigator.geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        // called `setState` to update `lat` and `lon`
+        this.setState(
+          {
+            lat: latitude,
+            lon: longitude
+          },
+          async () => {
+            const response = await fetch(
+              `http://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_WEATHER_API_KEY}&q=${this.state.lat},${this.state.lon}&days=5`
+            );
+            // convert results to JSON
+            const data = await response.json();
+            this.setState({
+              weatherForecast: data.forecast.forecastday
+            });
+          }
+        );
+      },
+      // make sure to `console.log(error)` any time any errors may pop up in your code (easier debugging)
+      error => this.setState({ errorMessage: error.message })
+    );
+  }
 
+  // componentDidUpdate() {
+  // 	console.log('Component Updated')
+  // }
+  // componentWillUnmount() {
+  // 	console.log('Component Unmounted')
+  // }
 
-	}
+  renderContent() {
+    // `if` statements are helpful for Conditional Rendering...
+    if (this.state.errorMessage || !this.state.lat) {
+      return <h2>Error: {this.state.errorMessage}</h2>;
+    } else if (!this.state.errorMessage && this.state.lat) {
+      return (
+        // `state` can be passed down to children components as `props`
+        <div id="container">
+          <div>
+            <SeasonDisplay lat={this.state.lat} lon={this.state.lon} />
+          </div>
+          <div id="locationData">
+            <LocationData
+              lat={this.state.lat}
+              lon={this.state.lon}
+              weatherForecast={this.state.weatherForecast}
+            />
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <Loader message="Waiting on You..." />
+      </div>
+    );
+  }
 
-	// componentDidUpdate() {
-	// 	console.log('Component Updated')
-	// }
-	// componentWillUnmount() {
-	// 	console.log('Component Unmounted')
-	// }
-
-	renderContent() {
-		// `if` statements are helpful for Conditional Rendering...
-		if(this.state.errorMessage || !this.state.lat) {
-			return <h2>Error: {this.state.errorMessage}</h2>;
-		} else if (!this.state.errorMessage && this.state.lat) {
-			return (
-				// `state` can be passed down to children components as `props`
-					<div id="container">
-						<div>
-							<SeasonDisplay
-								lat={this.state.lat}
-								lon={this.state.lon}
-							/>
-						</div>
-						<div id="locationData">
-							<LocationData
-								lat={this.state.lat}
-								lon={this.state.lon}
-								weatherForecast={this.state.weatherForecast}
-							/>
-						</div>
-					</div>
-			);
-		}
-		return (
-			<div>
-				<Loader message="Waiting on You..." />
-			</div>
-		)
-	};
-
-	render() {
-		return (
-			<div id="container">
-				{this.renderContent()}
-			</div>
-		)
-	}
+  render() {
+    return <div id="container">{this.renderContent()}</div>;
+  }
 }
 
 export default App;
