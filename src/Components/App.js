@@ -56,9 +56,8 @@ const App = () => {
 	`state` can only be updated using the function `setState()`;
 */
 
-// console.log(process.env.REACT_APP_WEATHER_API_KEY);
-//
-// console.log(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+console.log(process.env.REACT_APP_WEATHER_API_KEY);
+console.log(process.env.GOOGLE_MAPS_API_KEY);
 
 // `App` written as `class`- based component:
 class App extends React.Component {

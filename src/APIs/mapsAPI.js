@@ -28,5 +28,5 @@ export class MapContainer extends React.Component {
 }
 
 export default GoogleApiWrapper({
-  apiKey: process.env.FIREBASE_API_KEY
+  apiKey: process.env.GOOGLE_MAPS_API_KEY
 })(MapContainer);
